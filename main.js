@@ -1,19 +1,21 @@
 import './style.css'
-import {convertXML, createAST} from "simple-xml-to-json"
+import { convertXML } from "simple-xml-to-json"
 
 const inputElement = document.querySelector('#files')
 const output = document.querySelector('#output')
 
 inputElement.addEventListener("change", handleFiles, false);
+
 function handleFiles() {
+
   const fileList = this.files;
   const reader = new FileReader();
+  
   reader.onload = function(e) {
+
     const data = convertXML(e.target.result);
     const { ENTRIES: entries, children } = data.NML.children[2].COLLECTION
     const html = []
-
-    console.log(entries, children) 
 
     children.forEach(entry => {
       const {ARTIST: artist, TITLE: title} = entry.ENTRY

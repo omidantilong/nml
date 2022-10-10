@@ -5,7 +5,6 @@ import { json2csvAsync } from "json-2-csv"
 const inputElement = document.querySelector("#files")
 const output = document.querySelector("#output")
 const body = document.querySelector("body")
-const filename = document.querySelector("#filename")
 const master = {}
 const thead = `<thead><tr>
     <th>#</th>
@@ -48,7 +47,7 @@ function downloadCsv({ file, data }) {
       const url = URL.createObjectURL(blob)
       const link = document.createElement("a")
       link.setAttribute("href", url)
-      link.setAttribute("download", file + ".csv")
+      link.setAttribute("download", file.replace(".nml", ".csv"))
       link.click()
       link.remove()
     })

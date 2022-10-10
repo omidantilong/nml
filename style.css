@@ -45,16 +45,54 @@ main {
 #output details h2 {
   display: inline-block;
   cursor: pointer;
+  margin-left: 0.5rem;
 }
 
 #output details {
   width: 100%;
-  display: block;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  display: block;
+}
+
+#output details summary:before {
+  content: "\25B6";
+  display: inline-block;
+  width: 1rem;
+  transition: transform 0.1s linear;
+}
+
+#output details summary {
+  display: flex;
+  align-items: center;
 }
 
 #output details[open] {
   padding: 0 0 10px 0;
+}
+
+#output details[open] summary:before {
+  transform: rotate(90deg) translateX(2px);
+}
+
+#output details button.remove {
+  display: none;
+  background: none;
+  font-weight: bold;
+  border-radius: 2px;
+  cursor: pointer;
+  margin-left: 1rem;
+  transform: translateY(2px);
+  border: 1px solid #666;
+  color: #666;
+}
+
+#output details button.remove:hover {
+  border: 1px solid #f44336;
+  color: #f44336;
+}
+
+#output details:hover button.remove {
+  display: inline-block;
 }
 
 #output {

@@ -10,6 +10,16 @@ body.addEventListener("dragenter", dragenter, false)
 body.addEventListener("dragover", dragover, false)
 body.addEventListener("drop", drop, false)
 
+body.addEventListener("click", (e) => {
+  if (e.target.classList.contains("remove")) {
+    const id = e.target.dataset.id
+    const details = document.querySelector(`details[data-id="${id}"]`)
+    if (details) {
+      details.remove()
+    }
+  }
+})
+
 const thead = `<thead><tr>
     <th>#</th>
     <th>Artist</th>
@@ -40,10 +50,12 @@ function handleFile(file) {
     const playlist = convertXML(e.target.result)
     const { ENTRIES: count, children } = playlist.NML.children[2].COLLECTION
     const html = []
+    const uuid = crypto.randomUUID()
     html.push(
-      `<details>
+      `<details data-id="${uuid}">
         <summary>
           <h2>${file.name} (${children.length})</h2>
+          <button class="remove" data-id="${uuid}">Remove</button>
         </summary>
         <table width="100%">
           ${thead}

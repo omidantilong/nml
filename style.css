@@ -46,6 +46,7 @@ main {
   display: inline-block;
   cursor: pointer;
   margin-left: 0.5rem;
+  flex-grow: 1;
 }
 
 #output details {
@@ -66,6 +67,10 @@ main {
   align-items: center;
 }
 
+#output details summary .actions {
+  justify-self: flex-end;
+}
+
 #output details[open] {
   padding: 0 0 10px 0;
 }
@@ -75,7 +80,8 @@ main {
 }
 
 #output details button.remove {
-  display: none;
+}
+#output details button {
   background: none;
   font-weight: bold;
   border-radius: 2px;
@@ -84,15 +90,22 @@ main {
   transform: translateY(2px);
   border: 1px solid #666;
   color: #666;
+  padding: 4px;
 }
-
 #output details button.remove:hover {
-  border: 1px solid #f44336;
+  border-color: #f44336;
   color: #f44336;
 }
+#output details button.download:hover {
+  border-color: #4caf50;
+  color: #4caf50;
+}
+#output details .actions {
+  display: none;
+}
 
-#output details:hover button.remove {
-  display: inline-block;
+#output details:hover .actions {
+  display: flex;
 }
 
 #output {

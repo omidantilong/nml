@@ -29,11 +29,22 @@ function handleFiles(file) {
     children.forEach((entry) => {
       const track = entry.ENTRY
       const { ARTIST: artist, TITLE: title } = track
-      const { TEMPO: tempo } = track.children[3]
-      const { ALBUM: album } = track.children[1]
 
-      const bpm = tempo?.BPM || "-"
-      const albumTitle = album?.TITLE || "-"
+      const meta = {}
+
+      track.children.forEach((child) => {
+        const props = Object.keys(child)
+        if (props.includes("TEMPO")) {
+          meta.tempo = child.TEMPO
+        } else if (props.includes("ALBUM")) {
+          meta.album = child.ALBUM
+        }
+      })
+      console.log(meta)
+
+      const bpm = meta?.tempo?.BPM || "-"
+      const albumTitle = meta?.album?.TITLE || "-"
+
       html.push(
         `<tr><td>${artist}</td><td>${title}</td><td>${albumTitle}</td><td>${bpm}</td></tr>`
       )

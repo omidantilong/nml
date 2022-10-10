@@ -28,16 +28,33 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  padding:20px;
 }
-
-#form {}
+header {
+  background: #ec407a;
+  padding: 20px;
+  font-weight: bold;
+}
+main {
+  padding: 20px;
+}
+#form {
+}
 #output {
-  margin-top:20px;
+  margin-top: 20px;
+  display: none;
+  text-align: left;
 }
-#output tr td {
-  padding:5px;
+#output tr th {
+  text-transform: uppercase;
+}
+#output tr td,
+#output tr th {
+  padding: 8px;
 }
 #output tr:nth-child(odd) td {
-  background:rgba(0,0,0,0.1)
+  background: rgba(0, 0, 0, 0.1);
+}
+
+body.loaded #output {
+  display: table;
 }

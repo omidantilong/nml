@@ -5,14 +5,28 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vite App</title>
+  <title>NML Reader</title>
 </head>
 
 <body>
-  <form id="form">
-    <input type="file" name="files" id="files" />
-  </form>
-  <table id="output"></table>
+  <header><span>NML Reader</span></header>
+  <main>
+    <form id="form">
+      <input type="file" name="files" id="files" />
+    </form>
+    <h1 id="filename"></h1>
+    <table id="output" class="hidden">
+      <thead>
+        <tr>
+          <th>Artist</th>
+          <th>Track</th>
+          <th>Album</th>
+          <th>BPM</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </main>
   <script type="module" src="/main.js"></script>
 </body>
 

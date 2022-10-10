@@ -9,23 +9,15 @@
 </head>
 
 <body>
-  <header><span>NML Reader</span></header>
-  <main>
+  <header>
+    <div class="wrap"><span>NML Reader</span></div>
+  </header>
+  <main class="wrap">
     <form id="form">
-      <input type="file" name="files" id="files" />
+      <input type="file" name="files" id="files" multiple />
     </form>
     <h1 id="filename"></h1>
-    <table id="output" class="hidden">
-      <thead>
-        <tr>
-          <th>Artist</th>
-          <th>Track</th>
-          <th>Album</th>
-          <th>BPM</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <div id="output"></div>
   </main>
   <script type="module" src="/main.js"></script>
 </body>

@@ -2,7 +2,7 @@ import "./style.css"
 import { convertXML } from "simple-xml-to-json"
 
 const inputElement = document.querySelector("#files")
-const output = document.querySelector("#output tbody")
+const output = document.querySelector("#output")
 const body = document.querySelector("body")
 const filename = document.querySelector("#filename")
 
@@ -10,27 +10,53 @@ body.addEventListener("dragenter", dragenter, false)
 body.addEventListener("dragover", dragover, false)
 body.addEventListener("drop", drop, false)
 
+const thead = `<thead><tr>
+    <th>#</th>
+    <th>Artist</th>
+    <th>Track</th>
+    <th>Album</th>
+    <th>BPM</th>
+    <th>File</th>
+  </tr></thead>`
+
 inputElement.addEventListener(
   "change",
   function () {
-    handleFiles(this.files[0])
+    iterateFiles(this.files)
   },
   false
 )
 
-function handleFiles(file) {
+function iterateFiles(files) {
+  for (let i = 0; i < files.length; i++) {
+    handleFile(files[i])
+  }
+}
+
+function handleFile(file) {
   const reader = new FileReader()
 
   reader.onload = function (e) {
     const playlist = convertXML(e.target.result)
-    const { ENTRIES: entries, children } = playlist.NML.children[2].COLLECTION
+    const { ENTRIES: count, children } = playlist.NML.children[2].COLLECTION
     const html = []
+    html.push(
+      `<details>
+        <summary>
+          <h2>${file.name} (${children.length})</h2>
+        </summary>
+        <table width="100%">
+          ${thead}
+          <tbody>`
+    )
+
     console.log(playlist)
-    children.forEach((entry) => {
+    children.forEach((entry, i) => {
       const track = entry.ENTRY
       const { ARTIST: artist, TITLE: title } = track
 
       const meta = {}
+      const values = {}
 
       track.children.forEach((child) => {
         const props = Object.keys(child)
@@ -38,19 +64,32 @@ function handleFiles(file) {
           meta.tempo = child.TEMPO
         } else if (props.includes("ALBUM")) {
           meta.album = child.ALBUM
+        } else if (props.includes("LOCATION")) {
+          meta.location = child.LOCATION
         }
       })
       console.log(meta)
 
-      const bpm = meta?.tempo?.BPM || "-"
-      const albumTitle = meta?.album?.TITLE || "-"
+      values.bpm = meta?.tempo?.BPM || "-"
+      values.album = meta?.album?.TITLE || "-"
+      values.artist = artist && artist !== "undefined" ? artist : "-"
+      values.title = title
+      values.file = meta?.location?.FILE || "-"
 
       html.push(
-        `<tr><td>${artist}</td><td>${title}</td><td>${albumTitle}</td><td>${bpm}</td></tr>`
+        `<tr>
+          <td>${i + 1}</td>
+          <td>${values.artist}</td>
+          <td>${values.title}</td>
+          <td>${values.album}</td>
+          <td>${values.bpm}</td>
+          <td>${values.file}</td>
+        </tr>`
       )
     })
-    filename.textContent = file.name
-    output.innerHTML = html.join("")
+    html.push("</tbody></table></details>")
+    console.log(html)
+    output.innerHTML += html.join("")
     body.classList.add("loaded")
   }
 
@@ -65,8 +104,7 @@ function drop(e) {
   const files = dt.files
 
   inputElement.value = ""
-
-  handleFiles(files[0])
+  iterateFiles(files)
 }
 
 function dragenter(e) {

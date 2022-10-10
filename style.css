@@ -4,7 +4,6 @@
   line-height: 24px;
   font-weight: 400;
 
-  color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
 
@@ -37,24 +36,61 @@ header {
 main {
   padding: 20px;
 }
-#form {
+
+.wrap {
+  max-width: 1600px;
+  margin: auto;
 }
+
+#output details h2 {
+  display: inline-block;
+  cursor: pointer;
+}
+
+#output details {
+  width: 100%;
+  display: block;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+#output details[open] {
+  padding: 0 0 10px 0;
+}
+
 #output {
   margin-top: 20px;
   display: none;
   text-align: left;
 }
+#output table {
+  table-layout: fixed;
+  width: 100%;
+}
 #output tr th {
   text-transform: uppercase;
+}
+#output tr td {
+  overflow: hidden;
+  font-size: 0.825rem;
 }
 #output tr td,
 #output tr th {
   padding: 8px;
 }
+
+#output tr td:first-child,
+#output tr th:first-child {
+  width: 2rem;
+}
+
 #output tr:nth-child(odd) td {
   background: rgba(0, 0, 0, 0.1);
 }
 
+#output tr:hover td {
+  background: #666;
+}
+
 body.loaded #output {
-  display: table;
+  display: block;
 }

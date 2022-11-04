@@ -1,5 +1,4 @@
 import "./style.css"
-import { convertXML } from "simple-xml-to-json"
 import { json2csvAsync } from "json-2-csv"
 
 const inputElement = document.querySelector("#files")
@@ -64,15 +63,41 @@ function handleFile(file) {
   const reader = new FileReader()
 
   reader.onload = function (e) {
-    const playlist = convertXML(e.target.result)
-    const { ENTRIES: count, children } = playlist.NML.children[2].COLLECTION
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(e.target.result, "application/xml")
+    const playlist = Array.from(doc.querySelectorAll("PLAYLIST ENTRY"))
+    const collection = Array.from(doc.querySelectorAll("COLLECTION ENTRY"))
+
+    const keys = playlist.map((entry) =>
+      entry.querySelector("PRIMARYKEY").getAttribute("KEY").split("/:").pop()
+    )
+
+    const entries = collection.map((entry) => {
+      const artist = entry.getAttribute("ARTIST") || "-"
+      const title = entry.getAttribute("TITLE") || "-"
+      const album = entry.querySelector("ALBUM")?.getAttribute("TITLE") || "-"
+      const tempo = entry.querySelector("TEMPO")?.getAttribute("BPM") || "-"
+
+      const file = entry
+        .querySelector("LOCATION")
+        .getAttribute("FILE")
+        .replace(":", "")
+
+      const order = keys.indexOf(file) + 1
+
+      return { order, artist, title, album, tempo, file }
+    })
+    console.groupCollapsed(file.name)
+    console.log(entries)
+    console.groupEnd()
+
     const html = []
     const data = []
-    const uuid = crypto.randomUUID()
+    const uuid = playlist.UUID
     html.push(
-      `<details data-id="${uuid}">
+      `<details open data-id="${uuid}">
         <summary>
-          <h2>${file.name} (${children.length})</h2>
+          <h2>${file.name} (${collection.length})</h2>
           <div class="actions">
             <button class="download" data-id="${uuid}">Download CSV</button>
             <button class="remove" data-id="${uuid}">Remove</button>
@@ -83,45 +108,22 @@ function handleFile(file) {
           <tbody>`
     )
 
-    console.log(playlist)
+    entries
+      .sort((a, b) => a.order - b.order)
+      .forEach((entry, i) => {
+        data.push(entry)
 
-    children.forEach((entry, i) => {
-      const track = entry.ENTRY
-      const { ARTIST: artist, TITLE: title } = track
-
-      const meta = {}
-      const values = {}
-
-      track.children.forEach((child) => {
-        const props = Object.keys(child)
-        if (props.includes("TEMPO")) {
-          meta.tempo = child.TEMPO
-        } else if (props.includes("ALBUM")) {
-          meta.album = child.ALBUM
-        } else if (props.includes("LOCATION")) {
-          meta.location = child.LOCATION
-        }
-      })
-
-      values.artist = artist && artist !== "undefined" ? artist : "-"
-      values.title = title
-      values.album = meta?.album?.TITLE || "-"
-      values.bpm = meta?.tempo?.BPM || "-"
-      values.file = meta?.location?.FILE || "-"
-
-      data.push(values)
-
-      html.push(
-        `<tr>
+        html.push(
+          `<tr>
           <td>${i + 1}</td>
-          <td>${values.artist}</td>
-          <td>${values.title}</td>
-          <td>${values.album}</td>
-          <td>${values.bpm}</td>
-          <td>${values.file}</td>
+          <td>${entry.artist}</td>
+          <td>${entry.title}</td>
+          <td>${entry.album}</td>
+          <td>${entry.tempo}</td>
+          <td>${entry.file}</td>
         </tr>`
-      )
-    })
+        )
+      })
     html.push("</tbody></table></details>")
     output.innerHTML += html.join("")
     body.classList.add("loaded")

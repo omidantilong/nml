@@ -12,8 +12,6 @@
     "vite": "^3.1.0"
   },
   "dependencies": {
-    "json-2-csv": "^3.17.2",
-    "json2csv": "^5.0.7",
-    "simple-xml-to-json": "^1.0.9"
+    "json-2-csv": "^3.17.2"
   }
 }

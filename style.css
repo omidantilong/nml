@@ -44,7 +44,6 @@ main {
 
 #output details h2 {
   display: inline-block;
-  cursor: pointer;
   margin-left: 0.5rem;
   flex-grow: 1;
 }
@@ -79,33 +78,35 @@ main {
   transform: rotate(90deg) translateX(2px);
 }
 
-#output details button.remove {
-}
 #output details button {
   background: none;
   font-weight: bold;
   border-radius: 2px;
   cursor: pointer;
-  margin-left: 1rem;
+  margin-left: 0.5rem;
   transform: translateY(2px);
-  border: 1px solid #666;
-  color: #666;
-  padding: 4px;
+  border: 0;
+  color: white;
+  padding: 6px 8px;
+  min-width: 1.5rem;
 }
-#output details button.remove:hover {
-  border-color: #f44336;
-  color: #f44336;
+
+#output details button:hover {
+  box-shadow: inset 0px 0px 50px rgba(0, 0, 0, 0.2);
 }
-#output details button.download:hover {
-  border-color: #4caf50;
-  color: #4caf50;
+#output details button.remove {
+  background: #c62828;
 }
+#output details button.download {
+  background: #2e7d32;
+}
+
 #output details .actions {
-  display: none;
+  display: flex;
 }
 
 #output details:hover .actions {
-  display: flex;
+  opacity: 1;
 }
 
 #output {

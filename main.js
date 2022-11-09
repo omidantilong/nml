@@ -25,32 +25,38 @@ body.addEventListener("click", (e) => {
     if (details) {
       details.remove()
     }
-  } else if (e.target.classList.contains("download")) {
+  } else if (e.target.classList.contains("download-csv")) {
     const id = e.target.dataset.id
     downloadCsv(master[id])
+  } else if (e.target.classList.contains("download-txt")) {
+    const id = e.target.dataset.id
+    downloadTxt(master[id])
   }
 })
 
-inputElement.addEventListener(
-  "change",
-  function () {
-    iterateFiles(this.files)
-  },
-  false
-)
+inputElement.addEventListener("change", (e) => {
+  iterateFiles(e.target.files)
+})
 
 function downloadCsv({ file, data }) {
   json2csvAsync(data)
-    .then((csv) => {
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" })
-      const url = URL.createObjectURL(blob)
-      const link = document.createElement("a")
-      link.setAttribute("href", url)
-      link.setAttribute("download", file.replace(".nml", ".csv"))
-      link.click()
-      link.remove()
-    })
+    .then((csv) => createDownload(file, csv, "text/csv;charset=utf-8", ".csv"))
     .catch((err) => console.log("ERROR: " + err.message))
+}
+
+function downloadTxt({ file, data }) {
+  const txt = data.map((entry) => `${entry.artist} — ${entry.title}`).join("\n")
+  createDownload(file, txt, "text/plain;charset=utf-8", ".txt")
+}
+
+function createDownload(file, content, type, extension) {
+  const blob = new Blob([content], { type })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement("a")
+  link.setAttribute("href", url)
+  link.setAttribute("download", file.replace(".nml", extension))
+  link.click()
+  link.remove()
 }
 
 function iterateFiles(files) {
@@ -99,8 +105,9 @@ function handleFile(file) {
         <summary>
           <h2>${file.name} (${collection.length})</h2>
           <div class="actions">
-            <button class="download" data-id="${uuid}">Download CSV</button>
-            <button class="remove" data-id="${uuid}">Remove</button>
+            <button class="action download download-csv" data-id="${uuid}">Download CSV</button>
+            <button class="action download download-txt" data-id="${uuid}">Download TXT</button>
+            <button class="action remove" data-id="${uuid}">Clear</button>
           </div>
         </summary>
         <table width="100%">
